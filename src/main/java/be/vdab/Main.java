@@ -23,7 +23,7 @@ public class Main {
         } catch(SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var repository = new BrouwerRepository();
+        /*var repository = new BrouwerRepository();
         var scanner = new Scanner(System.in);
         System.out.print("Geef een minimale omzet in: ");
         var minimum = scanner.nextInt();
@@ -32,6 +32,16 @@ public class Main {
         try {
             System.out.println("Lijst van brouwers met een omzet tussen " + minimum + " en " + maximum + ": ");
             repository.getBrouwersMetOmzetTussenMinEnMax(minimum, maximum).forEach(System.out::println);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }*/
+        var repository = new BrouwerRepository();
+        var scanner = new Scanner(System.in);
+        System.out.print("Geef de id van een brouwer in: ");
+        var id = scanner.nextLong();
+        try {
+            repository.findById(id)
+                    .ifPresentOrElse(System.out::println, () -> System.out.println("Id " + id + " niet gevonden"));
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }
