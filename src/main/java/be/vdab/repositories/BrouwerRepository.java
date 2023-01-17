@@ -74,4 +74,16 @@ public class BrouwerRepository extends AbstractRepository {
             return result.next() ? Optional.of(naarBrouwer(result)) : Optional.empty();
         }
     }
+    public List<Brouwer> getBrouwersMetOmzetTussenViaStoredProcedure(int minimum, int maximum) throws SQLException {
+        var brouwers = new ArrayList<Brouwer>();
+        try (var connection = super.getConnection();
+             var statement = connection.prepareCall("{call BrouwersMetOmzetTussen(?, ?)}")) {
+            statement.setInt(1, minimum);
+            statement.setInt(2, maximum);
+            for (var result = statement.executeQuery(); result.next(); ) {
+                brouwers.add(naarBrouwer(result));
+            }
+            return brouwers;
+        }
+    }
 }
