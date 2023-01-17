@@ -42,4 +42,22 @@ public class BrouwerRepository extends AbstractRepository {
                 result.getString("adres"), result.getInt("postcode"),
                 result.getString("gemeente"), result.getInt("omzet"));
     }
+    public List<Brouwer> getBrouwersMetOmzetTussenMinEnMax(int minimum, int maximum) throws SQLException {
+        var brouwers = new ArrayList<Brouwer>();
+        var sql = """
+                select id, naam, adres, postcode, gemeente, omzet
+                from brouwers
+                where omzet between ? and ?
+                order by omzet, id
+                """;
+        try (var connection = super.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, minimum);
+            statement.setInt(2, maximum);
+            for (var result = statement.executeQuery(); result.next(); ) {
+                brouwers.add(naarBrouwer(result));
+            }
+            return brouwers;
+        }
+    }
 }
