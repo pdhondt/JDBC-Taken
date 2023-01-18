@@ -2,6 +2,8 @@ package be.vdab.repositories;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BierRepository extends AbstractRepository {
     public int verwijderBierenZonderAlcoholPercentage() throws SQLException {
@@ -39,6 +41,27 @@ public class BierRepository extends AbstractRepository {
             statementTot8Punt5.executeUpdate();
             statementDeleteBrouwer1.executeUpdate();
             connection.commit();
+        }
+    }
+    public List<String> findBierenVerkochtSinds(int maand) throws SQLException {
+        var bierNamen = new ArrayList<String>();
+        var sql = """
+                select naam
+                from bieren
+                where {fn month(sinds)} = ?
+                order by naam
+                """;
+        try (var connection = super.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            connection.setAutoCommit(false);
+            statement.setInt(1, maand);
+            var result = statement.executeQuery();
+            while (result.next()) {
+                bierNamen.add(result.getString("naam"));
+            }
+            connection.commit();
+            return bierNamen;
         }
     }
 }

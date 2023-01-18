@@ -58,9 +58,22 @@ public class Main {
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var repository = new BierRepository();
+        /*var repository = new BierRepository();
         try {
             repository.brouwer1Failliet();
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }*/
+        var scanner = new Scanner(System.in);
+        System.out.print("Geef een maandnummer in: ");
+        var maand = scanner.nextInt();
+        while (maand < 1 || maand > 12) {
+            System.out.print("Ongeldig maandnummer.  Geef een maandnummer in: ");
+            maand = scanner.nextInt();
+        }
+        var repository = new BierRepository();
+        try {
+            repository.findBierenVerkochtSinds(maand).forEach(System.out::println);
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }
