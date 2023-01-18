@@ -1,5 +1,6 @@
 package be.vdab;
 
+import be.vdab.repositories.BierRepository;
 import be.vdab.repositories.BrouwerRepository;
 
 import java.sql.SQLException;
@@ -45,7 +46,7 @@ public class Main {
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var repository = new BrouwerRepository();
+        /*var repository = new BrouwerRepository();
         var scanner = new Scanner(System.in);
         System.out.print("Geef een minimale omzet in: ");
         var minimum = scanner.nextInt();
@@ -54,6 +55,12 @@ public class Main {
         try {
             System.out.println("Lijst van brouwers met een omzet tussen " + minimum + " en " + maximum + ": ");
             repository.getBrouwersMetOmzetTussenViaStoredProcedure(minimum, maximum).forEach(System.out::println);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }*/
+        var repository = new BierRepository();
+        try {
+            repository.brouwer1Failliet();
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }
