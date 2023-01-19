@@ -64,7 +64,7 @@ public class Main {
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var scanner = new Scanner(System.in);
+        /*var scanner = new Scanner(System.in);
         System.out.print("Geef een maandnummer in: ");
         var maand = scanner.nextInt();
         while (maand < 1 || maand > 12) {
@@ -74,6 +74,13 @@ public class Main {
         var repository = new BierRepository();
         try {
             repository.findBierenVerkochtSinds(maand).forEach(System.out::println);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }*/
+        var repository = new BierRepository();
+        try {
+            System.out.println("Aantal bieren per brouwer, gesorteerd op brouwernaam:");
+            repository.findAantalBierenPerBrouwer().forEach(System.out::println);
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }

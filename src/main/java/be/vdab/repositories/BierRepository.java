@@ -1,5 +1,7 @@
 package be.vdab.repositories;
 
+import be.vdab.dto.BrouwerNaamEnAantalBieren;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,6 +64,28 @@ public class BierRepository extends AbstractRepository {
             }
             connection.commit();
             return bierNamen;
+        }
+    }
+    public List<BrouwerNaamEnAantalBieren> findAantalBierenPerBrouwer() throws SQLException {
+        var list = new ArrayList<BrouwerNaamEnAantalBieren>();
+        var sql = """
+                SELECT brouwers.naam as brouwerNaam, count(*) as aantalBieren
+                FROM bieren.bieren
+                inner join bieren.brouwers
+                on bieren.brouwerId = brouwers.id
+                group by brouwerId
+                order by brouwerNaam
+                """;
+        try (var connection = super.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            connection.setAutoCommit(false);
+            var result = statement.executeQuery();
+            while (result.next()) {
+                list.add(new BrouwerNaamEnAantalBieren(result.getString("brouwerNaam"), result.getInt("aantalBieren")));
+            }
+            connection.commit();
+            return list;
         }
     }
 }
