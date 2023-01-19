@@ -77,10 +77,25 @@ public class Main {
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var repository = new BierRepository();
+        /*var repository = new BierRepository();
         try {
             System.out.println("Aantal bieren per brouwer, gesorteerd op brouwernaam:");
             repository.findAantalBierenPerBrouwer().forEach(System.out::println);
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }*/
+        var scanner = new Scanner(System.in);
+        System.out.print("Geef een biersoort in: ");
+        var soortNaam = scanner.nextLine();
+        var repository = new BierRepository();
+        try {
+            var namen = repository.findBierenVanEenSoort(soortNaam);
+            if (namen.isEmpty()) {
+                System.out.println("Geen bieren gevonden");
+            } else {
+                System.out.println("Lijst van bieren van de soort " + soortNaam);
+                namen.forEach(System.out::println);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }

@@ -88,4 +88,25 @@ public class BierRepository extends AbstractRepository {
             return list;
         }
     }
+    public List<String> findBierenVanEenSoort(String soortNaam) throws SQLException {
+        var bierNamenVanSoort = new ArrayList<String>();
+        var sql = """
+                SELECT bieren.naam FROM bieren.bieren
+                inner join bieren.soorten
+                on bieren.soortId = soorten.id
+                where soorten.naam = ?
+                """;
+        try (var connection = super.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            connection.setAutoCommit(false);
+            statement.setString(1, soortNaam);
+            var result = statement.executeQuery();
+            while (result.next()) {
+                bierNamenVanSoort.add(result.getString("naam"));
+            }
+            connection.commit();
+            return bierNamenVanSoort;
+        }
+    }
 }
