@@ -4,6 +4,7 @@ import be.vdab.repositories.BierRepository;
 import be.vdab.repositories.BrouwerRepository;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Main {
@@ -84,7 +85,7 @@ public class Main {
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }*/
-        var scanner = new Scanner(System.in);
+        /*var scanner = new Scanner(System.in);
         System.out.print("Geef een biersoort in: ");
         var soortNaam = scanner.nextLine();
         var repository = new BierRepository();
@@ -98,6 +99,33 @@ public class Main {
             }
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
+        }*/
+        System.out.print("Geef de brouwerIds in van dewelke je de omzet wil leegmaken (0 om te stoppen): ");
+        var scanner = new Scanner(System.in);
+        var brouwerIds = new HashSet<Long>();
+        for (long id; (id = scanner.nextLong()) != 0; ) {
+            if (id < 0) {
+                System.out.println("Id mag niet negatief zijn.  Geef de brouwerIds in: ");
+            } else {
+                if (!brouwerIds.add(id)) {
+                    System.out.println(id + " is reeds toegevoegd aan de lijst.  Geef de brouwerIds in: ");
+                }
+            }
+            System.out.print("Geef de brouwerIds in van dewelke je de omzet wil leegmaken (0 om te stoppen): ");
+        }
+        if (!brouwerIds.isEmpty()) {
+            var repository = new BrouwerRepository();
+            try {
+                var aantalLeeggemaakt = repository.maakOmzetLeeg(brouwerIds);
+                System.out.println("Aantal leeggemaakte brouwers: " + aantalLeeggemaakt);
+                if (aantalLeeggemaakt != brouwerIds.size()) {
+                    System.out.println("Niet gevonden brouwerIds: ");
+                    var gevondenIds = repository.controleerBrouwerIds(brouwerIds);
+                    brouwerIds.stream().filter(id -> ! gevondenIds.contains(id)).forEach(System.out::println);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
         }
     }
 }
